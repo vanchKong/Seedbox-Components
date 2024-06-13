@@ -24,7 +24,7 @@ function Deluge_install {
     if [[ $distro_codename = buster ]]; then
         ## Installing Libtorrent
         apt-get -qqy install libboost-all-dev libboost-dev python python-twisted python-openssl python-setuptools intltool python-xdg python-chardet geoip-database python-notify python-pygame python-glade2 librsvg2-common xdg-utils python-mako 
-        wget https://raw.githubusercontent.com/jerry048/Seedbox-Components/main/Torrent%20Clients/Deluge/libtorrent/buster_libtorrent-rasterbar_$libtorrent_Ver-amd64.deb
+        wget https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/Torrent%20Clients/Deluge/libtorrent/buster_libtorrent-rasterbar_$libtorrent_Ver-amd64.deb
         dpkg -r libtorrent-rasterbar
         dpkg -i /root/buster_libtorrent-rasterbar_$libtorrent_Ver-amd64.deb && rm /root/buster_libtorrent-rasterbar_$libtorrent_Ver-amd64.deb
         ldconfig
@@ -91,9 +91,9 @@ EOF
         pip install Twisted service-identity mako chardet pyopenssl
         wget http://archive.ubuntu.com/ubuntu/pool/universe/p/pyxdg/python-xdg_0.26-1ubuntu1_all.deb
         dpkg -i python-xdg_0.26-1ubuntu1_all.deb
-        wget https://raw.githubusercontent.com/jerry048/Seedbox-Components/main/Torrent%20Clients/Deluge/boost/boost-1-69-0_20220512-1_amd64.deb
+        wget https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/Torrent%20Clients/Deluge/boost/boost-1-69-0_20220512-1_amd64.deb
         dpkg -i boost-1-69-0_20220512-1_amd64.deb
-        wget https://raw.githubusercontent.com/jerry048/Seedbox-Components/main/Torrent%20Clients/Deluge/libtorrent/bullseye_libtorrent-rasterbar_$libtorrent_Ver-amd64.deb
+        wget https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/Torrent%20Clients/Deluge/libtorrent/bullseye_libtorrent-rasterbar_$libtorrent_Ver-amd64.deb
         dpkg -r libtorrent-rasterbar
         dpkg -i /root/bullseye_libtorrent-rasterbar_$libtorrent_Ver-amd64.deb && rm /root/bullseye_libtorrent-rasterbar_$libtorrent_Ver-amd64.deb
         ldconfig
@@ -274,8 +274,8 @@ EOF
 
     ## Setting up WebUI config
     DWSALT=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)
-    wget https://raw.githubusercontent.com/jerry048/Seedbox-Components/main/Torrent%20Clients/Deluge/deluge.Userpass.py
-    wget https://raw.githubusercontent.com/jerry048/Seedbox-Components/main/Torrent%20Clients/Deluge/deluge.addHost.py
+    wget https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/Torrent%20Clients/Deluge/deluge.Userpass.py
+    wget https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/Torrent%20Clients/Deluge/deluge.addHost.py
     DWP=$(python2 /root/deluge.Userpass.py $password $DWSALT)
 	DUDID=$(python2 /root/deluge.addHost.py)
     cat << EOF >/home/$username/.config/deluge/web.conf
