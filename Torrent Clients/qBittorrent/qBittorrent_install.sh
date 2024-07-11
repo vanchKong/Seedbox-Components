@@ -218,6 +218,7 @@ After=network.target
 Type=forking
 User=$username
 LimitNOFILE=infinity
+ExecStartPre=/bin/sh -c 'echo "50" > /dev/shm/announce.txt'
 ExecStart=/usr/bin/qbittorrent-nox -d
 ExecStop=/usr/bin/killall -w -s 9 /usr/bin/qbittorrent-nox
 Restart=on-failure
