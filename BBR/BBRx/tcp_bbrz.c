@@ -155,7 +155,7 @@ static const int bbr_high_gain  = BBR_UNIT * 3500 / 1000 + 1;
 /* The pacing gain of 1/high_gain in BBR_DRAIN is calculated to typically drain
  * the queue created in BBR_STARTUP in a single round:
  */
-static const int bbr_drain_gain = BBR_UNIT * 1400 / 3500;
+static const int bbr_drain_gain = BBR_UNIT * 1000 / 3500;
 /* The gain for deriving steady-state cwnd tolerates delayed/stretched ACKs: */
 static const int bbr_cwnd_gain  = BBR_UNIT * 35 / 10;
 /* The pacing_gain values for the PROBE_BW gain cycle, to discover/share bw: */
