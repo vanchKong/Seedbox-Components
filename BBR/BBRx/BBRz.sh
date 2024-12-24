@@ -1,5 +1,5 @@
 #!/bin/bash
-sleep 60s
+sleep 10s
 ## Installing BBR
 cd $HOME
 

@@ -151,13 +151,13 @@ static const int bbr_pacing_margin_percent = 1;
  * and send the same number of packets per RTT that an un-paced, slow-starting
  * Reno or CUBIC flow would:
  */
-static const int bbr_high_gain  = BBR_UNIT * 3500 / 1000 + 1;
+static const int bbr_high_gain  = BBR_UNIT * 3000 / 1000 + 1;
 /* The pacing gain of 1/high_gain in BBR_DRAIN is calculated to typically drain
  * the queue created in BBR_STARTUP in a single round:
  */
-static const int bbr_drain_gain = BBR_UNIT * 1000 / 3500;
+static const int bbr_drain_gain = BBR_UNIT * 1200 / 3000;
 /* The gain for deriving steady-state cwnd tolerates delayed/stretched ACKs: */
-static const int bbr_cwnd_gain  = BBR_UNIT * 35 / 10;
+static const int bbr_cwnd_gain  = BBR_UNIT * 30 / 10;
 /* The pacing_gain values for the PROBE_BW gain cycle, to discover/share bw: */
 static const int bbr_pacing_gain[] = {
 	BBR_UNIT * 6 / 4,	/* probe for more available bw */
@@ -188,7 +188,7 @@ static const u32 bbr_lt_loss_thresh = 50;
 /* If 2 intervals have a bw ratio <= 1/8, their bw is "consistent": */
 static const u32 bbr_lt_bw_ratio = BBR_UNIT / 4;
 /* If 2 intervals have a bw diff <= 4 Kbit/sec their bw is "consistent": */
-static const u32 bbr_lt_bw_diff = 4000 / 8;
+static const u32 bbr_lt_bw_diff = 4000 / 4;
 /* If we estimate we're policed, use lt_bw for this many round trips: */
 static const u32 bbr_lt_bw_max_rtts = 48;
 
