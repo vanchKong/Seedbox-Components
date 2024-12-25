@@ -114,3 +114,5 @@ rm -r $HOME/.bbr
 systemctl disable bbrinstall.service
 rm /etc/systemd/system/bbrinstall.service
 rm /root/BBRz.sh
+shutdown -r +1
+
