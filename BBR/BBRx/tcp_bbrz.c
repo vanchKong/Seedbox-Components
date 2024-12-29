@@ -157,11 +157,11 @@ static const int bbr_high_gain  = BBR_UNIT * 2885 / 1000 + 1;
  */
 static const int bbr_drain_gain = BBR_UNIT * 1200 / 2885;
 /* The gain for deriving steady-state cwnd tolerates delayed/stretched ACKs: */
-static const int bbr_cwnd_gain  = BBR_UNIT * 2;
+static const int bbr_cwnd_gain  = BBR_UNIT * 4;
 /* The pacing_gain values for the PROBE_BW gain cycle, to discover/share bw: */
 static const int bbr_pacing_gain[] = {
-	BBR_UNIT * 6 / 4,	/* probe for more available bw */
-	BBR_UNIT * 3 / 4,	/* drain queue and/or yield bw to other flows */
+    BBR_UNIT * 6 / 4,    /* probe for more available bw */
+    BBR_UNIT * 3 / 4,    /* drain queue and/or yield bw to other flows */
     BBR_UNIT * 9 / 8, BBR_UNIT * 9 / 8, BBR_UNIT * 9 / 8,    /* cruise at 1.0*bw to utilize pipe, */
     BBR_UNIT * 9 / 8, BBR_UNIT * 9 / 8, BBR_UNIT * 9 / 8    /* without creating excess queue... */
 };
@@ -176,9 +176,9 @@ static const u32 bbr_cwnd_min_target = 4;
 
 /* To estimate if BBR_STARTUP mode (i.e. high_gain) has filled pipe... */
 /* If bw has increased significantly (1.25x), there may be more bw available: */
-static const u32 bbr_full_bw_thresh = BBR_UNIT * 5 / 4;
+static const u32 bbr_full_bw_thresh = BBR_UNIT * 105 / 100;
 /* But after 3 rounds w/o significant bw growth, estimate pipe is full: */
-static const u32 bbr_full_bw_cnt = 3;
+static const u32 bbr_full_bw_cnt = 10;
 
 /* "long-term" ("LT") bandwidth estimator parameters... */
 /* The minimum number of rounds in an LT bw sampling interval: */
@@ -186,9 +186,9 @@ static const u32 bbr_lt_intvl_min_rtts = 4;
 /* If lost/delivered ratio > 20%, interval is "lossy" and we may be policed: */
 static const u32 bbr_lt_loss_thresh = 50;
 /* If 2 intervals have a bw ratio <= 1/8, their bw is "consistent": */
-static const u32 bbr_lt_bw_ratio = BBR_UNIT / 8;
+static const u32 bbr_lt_bw_ratio = BBR_UNIT / 4;
 /* If 2 intervals have a bw diff <= 4 Kbit/sec their bw is "consistent": */
-static const u32 bbr_lt_bw_diff = 4000 / 8;
+static const u32 bbr_lt_bw_diff = 4000 / 4;
 /* If we estimate we're policed, use lt_bw for this many round trips: */
 static const u32 bbr_lt_bw_max_rtts = 48;
 
