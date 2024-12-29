@@ -178,7 +178,7 @@ static const u32 bbr_cwnd_min_target = 4;
 /* If bw has increased significantly (1.25x), there may be more bw available: */
 static const u32 bbr_full_bw_thresh = BBR_UNIT * 110 / 100;
 /* But after 3 rounds w/o significant bw growth, estimate pipe is full: */
-static const u32 bbr_full_bw_cnt = 3;
+static const u32 bbr_full_bw_cnt = 4;
 
 /* "long-term" ("LT") bandwidth estimator parameters... */
 /* The minimum number of rounds in an LT bw sampling interval: */
