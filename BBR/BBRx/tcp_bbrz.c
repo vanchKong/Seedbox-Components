@@ -163,7 +163,7 @@ static const int bbr_pacing_gain[] = {
     BBR_UNIT * 6 / 4,    /* probe for more available bw */
     BBR_UNIT * 3 / 4,    /* drain queue and/or yield bw to other flows */
     BBR_UNIT * 8 / 7, BBR_UNIT * 8 / 7, BBR_UNIT * 8 / 7,    /* cruise at 1.0*bw to utilize pipe, */
-    BBR_UNIT * 6 / 5, BBR_UNIT * 6 / 5, BBR_UNIT * 6 / 5    /* without creating excess queue... */
+    BBR_UNIT * 8 / 7, BBR_UNIT * 8 / 7, BBR_UNIT * 8 / 7    /* without creating excess queue... */
 };
 /* Randomize the starting gain cycling phase over N phases: */
 static const u32 bbr_cycle_rand = 7;
