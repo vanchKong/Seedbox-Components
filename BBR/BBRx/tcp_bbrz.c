@@ -172,7 +172,7 @@ static const u32 bbr_cycle_rand = 7;
  * smooth functioning, a sliding window protocol ACKing every other packet
  * needs at least 4 packets in flight:
  */
-static const u32 bbr_cwnd_min_target = 4;
+static const u32 bbr_cwnd_min_target = 20;
 
 /* To estimate if BBR_STARTUP mode (i.e. high_gain) has filled pipe... */
 /* If bw has increased significantly (1.25x), there may be more bw available: */
