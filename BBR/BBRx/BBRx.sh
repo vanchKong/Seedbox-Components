@@ -1,5 +1,5 @@
 #!/bin/bash
-sleep 60s
+sleep 20s
 ## Installing BBR
 cd $HOME
 
@@ -114,3 +114,4 @@ rm -r $HOME/.bbr
 systemctl disable bbrinstall.service
 rm /etc/systemd/system/bbrinstall.service
 rm /root/BBRx.sh
+shutdown -r +1
