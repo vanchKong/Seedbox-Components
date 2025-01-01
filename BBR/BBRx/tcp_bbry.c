@@ -1141,7 +1141,7 @@ static void bbr_set_state(struct sock *sk, u8 new_state)
 
 static struct tcp_congestion_ops tcp_bbr_cong_ops __read_mostly = {
 	.flags		= TCP_CONG_NON_RESTRICTED,
-	.name		= "bbrz",
+	.name		= "bbry",
 	.owner		= THIS_MODULE,
 	.init		= bbr_init,
 	.cong_control	= bbr_main,
@@ -1199,4 +1199,4 @@ MODULE_AUTHOR("Neal Cardwell <ncardwell@google.com>");
 MODULE_AUTHOR("Yuchung Cheng <ycheng@google.com>");
 MODULE_AUTHOR("Soheil Hassas Yeganeh <soheil@google.com>");
 MODULE_LICENSE("Dual BSD/GPL");
-MODULE_DESCRIPTION("TCP BBRz MOD @2025.01.01 20:30 (Bottleneck Bandwidth and RTT)");
+MODULE_DESCRIPTION("TCP BBRy MOD @2025.01.01 20:30 (Bottleneck Bandwidth and RTT)");
