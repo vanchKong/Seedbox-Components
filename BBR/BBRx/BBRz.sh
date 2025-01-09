@@ -102,7 +102,7 @@ if [ ! $? -eq 0 ]; then
 fi
 
 # Auto-load kernel module at system startup
-echo $bbr_file | sudo tee -a /etc/modules
+echo $bbr_file | tee -a /etc/modules
 sed -i '/net.ipv4.tcp_congestion_control/d' /etc/sysctl.conf
 echo "net.ipv4.tcp_congestion_control = $algo" >> /etc/sysctl.conf
 sysctl -p > /dev/null
