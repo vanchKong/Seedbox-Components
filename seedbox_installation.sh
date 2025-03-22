@@ -1011,20 +1011,20 @@ install_bbry_() {
 		if [ $(uname -m) == "x86_64" ]; then
 			apt-get -y install linux-image-amd64 linux-headers-amd64
 			if [ $? -ne 0 ]; then
-				fail "BBR installation failed"
+				fail "BBRy installation failed"
 				return 1
 			fi
 		elif [ $(uname -m) == "aarch64" ]; then
 			apt-get -y install linux-image-arm64 linux-headers-arm64
 			if [ $? -ne 0 ]; then
-				fail "BBR installation failed"
+				fail "BBRy installation failed"
 				return 1
 			fi
 		fi
 	elif [[ "$OS" =~ "Ubuntu" ]]; then
 		apt-get -y install linux-image-generic linux-headers-generic
 		if [ $? -ne 0 ]; then
-			fail "BBR installation failed"
+			fail "BBRy installation failed"
 			return 1
 		fi
 	else
@@ -1078,20 +1078,20 @@ install_bbrz_() {
 		if [ $(uname -m) == "x86_64" ]; then
 			apt-get -y install linux-image-amd64 linux-headers-amd64
 			if [ $? -ne 0 ]; then
-				fail "BBR installation failed"
+				fail "BBRz installation failed"
 				return 1
 			fi
 		elif [ $(uname -m) == "aarch64" ]; then
 			apt-get -y install linux-image-arm64 linux-headers-arm64
 			if [ $? -ne 0 ]; then
-				fail "BBR installation failed"
+				fail "BBRz installation failed"
 				return 1
 			fi
 		fi
 	elif [[ "$OS" =~ "Ubuntu" ]]; then
 		apt-get -y install linux-image-generic linux-headers-generic
 		if [ $? -ne 0 ]; then
-			fail "BBR installation failed"
+			fail "BBRz installation failed"
 			return 1
 		fi
 	else
