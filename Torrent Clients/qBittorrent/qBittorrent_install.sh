@@ -1,5 +1,5 @@
 ## List of qBittorrent Version that is supported
-declare -a qb_ver_list=("4.1.9" "4.1.9.1" "4.3.8" "4.3.9" "4.6.7" "5.0.4")
+declare -a qb_ver_list=("4.1.9" "4.1.9.1" "4.3.8" "4.3.9" "4.6.7" "5.0.3" "5.0.4")
 #Generate the list of qBittorrent Version that is supported
 unset qb_name_list i
 for i in "${qb_ver_list[@]}"
