@@ -7,7 +7,7 @@ do
 	qb_name_list+=("qBittorrent-$i")
 done
 ## List of libtorrent Version that is supported
-declare -a lib_ver_list=("1_1_14" "v1.2.14" "v1.2.19" "v1.2.20")
+declare -a lib_ver_list=("1_1_14" "v1.2.14" "v1.2.19" "v1.2.20" "v2.0.11")
 #Generate the list of libtorrent Version that is supported
 unset lib_name_list i
 for i in "${lib_ver_list[@]}"
