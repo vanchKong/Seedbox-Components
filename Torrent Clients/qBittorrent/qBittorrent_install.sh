@@ -250,17 +250,17 @@ EOF
 		warn "Virtualization is detected, skipping some of the tunning"
 		aio=8
 		low_buffer=3072
-		buffer=15360
+		buffer=12288
 		buffer_factor=200
 	else
 		#Determine if it is a SSD or a HDD
 		disk_name=$(printf $(lsblk | grep -m1 'disk' | awk '{print $1}'))
 		disktype=$(cat /sys/block/$disk_name/queue/rotational)
 		if [ "${disktype}" == 0 ]; then
-			aio=12
+			aio=8
 			low_buffer=5120
 			buffer=20480
-			buffer_factor=250
+			buffer_factor=200
 		else
 			aio=4
 			low_buffer=3072
