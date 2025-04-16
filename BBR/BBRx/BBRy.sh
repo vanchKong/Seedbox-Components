@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "----BBRy Install----"
 sleep 10s
 ## Installing BBR
 cd $HOME
@@ -102,6 +103,7 @@ if [ ! $? -eq 0 ]; then
 fi
 
 # Auto-load kernel module at system startup
+sed -i '/tcp_bbry/d' /etc/modules
 echo $bbr_file | tee -a /etc/modules
 
 sed -i '/net.core.default_qdisc/d' /etc/sysctl.conf
