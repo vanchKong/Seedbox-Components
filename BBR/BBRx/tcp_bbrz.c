@@ -134,7 +134,7 @@ static const int bbr_bw_rtts = CYCLE_LEN + 10;
 /* Window length of min_rtt filter (in sec): */
 static const u32 bbr_min_rtt_win_sec = 30;
 /* Minimum time (in ms) spent at bbr_cwnd_min_target in BBR_PROBE_RTT mode: */
-static const u32 bbr_probe_rtt_mode_ms = 180;
+static const u32 bbr_probe_rtt_mode_ms = 150;
 /* Skip TSO below the following bandwidth (bits/sec): */
 static const int bbr_min_tso_rate = 1200000;
 
@@ -151,19 +151,19 @@ static const int bbr_pacing_margin_percent = 1;
  * and send the same number of packets per RTT that an un-paced, slow-starting
  * Reno or CUBIC flow would:
  */
-static const int bbr_high_gain  = BBR_UNIT * 3000 / 1000 + 1;
+static const int bbr_high_gain  = BBR_UNIT * 3900 / 1000 + 1;
 /* The pacing gain of 1/high_gain in BBR_DRAIN is calculated to typically drain
  * the queue created in BBR_STARTUP in a single round:
  */
-static const int bbr_drain_gain = BBR_UNIT * 1200 / 2885;
+static const int bbr_drain_gain = BBR_UNIT * 1000 / 2885;
 /* The gain for deriving steady-state cwnd tolerates delayed/stretched ACKs: */
 static const int bbr_cwnd_gain  = BBR_UNIT * 3;
 /* The pacing_gain values for the PROBE_BW gain cycle, to discover/share bw: */
 static const int bbr_pacing_gain[] = {
     BBR_UNIT * 6 / 4,    /* probe for more available bw */
     BBR_UNIT * 3 / 4,    /* drain queue and/or yield bw to other flows */
-    BBR_UNIT * 6 / 5, BBR_UNIT * 6 / 5, BBR_UNIT * 6 / 5,    /* cruise at 1.0*bw to utilize pipe, */
-    BBR_UNIT * 6 / 5, BBR_UNIT * 6 / 5, BBR_UNIT * 6 / 5    /* without creating excess queue... */
+	BBR_UNIT * 5 / 4, BBR_UNIT * 6 / 4, BBR_UNIT * 5 / 4,	/* cruise at 1.0*bw to utilize pipe, */
+	BBR_UNIT * 6 / 4, BBR_UNIT * 5 / 4, BBR_UNIT * 6 / 4	/* without creating excess queue... */
 };
 /* Randomize the starting gain cycling phase over N phases: */
 static const u32 bbr_cycle_rand = 7;
@@ -193,9 +193,9 @@ static const u32 bbr_lt_bw_diff = 4000 / 8;
 static const u32 bbr_lt_bw_max_rtts = 48;
 
 /* Gain factor for adding extra_acked to target cwnd: */
-static const int bbr_extra_acked_gain = BBR_UNIT;
+static const int bbr_extra_acked_gain = BBR_UNIT * 6 / 5;
 /* Window length of extra_acked window. */
-static const u32 bbr_extra_acked_win_rtts = 5;
+static const u32 bbr_extra_acked_win_rtts = 10;
 /* Max allowed val for ack_epoch_acked, after which sampling epoch is reset */
 static const u32 bbr_ack_epoch_acked_reset_thresh = 1U << 20;
 /* Time period for clamping cwnd increment due to ack aggregation */
@@ -546,7 +546,7 @@ static void bbr_set_cwnd(struct sock *sk, const struct rate_sample *rs,
 done:
 	tcp_snd_cwnd_set(tp, min(cwnd, tp->snd_cwnd_clamp));	/* apply global cap */
 	if (bbr->mode == BBR_PROBE_RTT)  /* drain queue, refresh min_rtt */
-		tcp_snd_cwnd_set(tp, min(tcp_snd_cwnd(tp), bbr_cwnd_min_target));
+		tcp_snd_cwnd_set(tp, max(tcp_snd_cwnd(tp) >> 1, bbr_cwnd_min_target));
 }
 
 /* End cycle phase if it's time and/or we hit the phase's in-flight target. */
@@ -1199,4 +1199,4 @@ MODULE_AUTHOR("Neal Cardwell <ncardwell@google.com>");
 MODULE_AUTHOR("Yuchung Cheng <ycheng@google.com>");
 MODULE_AUTHOR("Soheil Hassas Yeganeh <soheil@google.com>");
 MODULE_LICENSE("Dual BSD/GPL");
-MODULE_DESCRIPTION("TCP BBRz MOD @2025.01.01 20:30 (Bottleneck Bandwidth and RTT)");
+MODULE_DESCRIPTION("TCP BBRz MOD @2025.04.20 18:00 (Bottleneck Bandwidth and RTT)");

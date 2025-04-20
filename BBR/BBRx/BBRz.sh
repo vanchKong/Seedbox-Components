@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "----BBRz Install----"
 sleep 10s
 ## Installing BBR
 cd $HOME
@@ -102,7 +103,11 @@ if [ ! $? -eq 0 ]; then
 fi
 
 # Auto-load kernel module at system startup
+sed -i '/tcp_bbrz/d' /etc/modules
 echo $bbr_file | tee -a /etc/modules
+
+sed -i '/net.core.default_qdisc/d' /etc/sysctl.conf
+echo "net.core.default_qdisc = fq" >> /etc/sysctl.conf
 sed -i '/net.ipv4.tcp_congestion_control/d' /etc/sysctl.conf
 echo "net.ipv4.tcp_congestion_control = $algo" >> /etc/sysctl.conf
 sysctl -p > /dev/null
@@ -111,8 +116,8 @@ cd $HOME
 rm -r $HOME/.bbr
 
 ## Clear
-systemctl disable bbrinstall.service
-rm /etc/systemd/system/bbrinstall.service
-rm /root/BBRz.sh
+systemctl disable bbrinstall.service > /dev/null 2>&1
+rm /etc/systemd/system/bbrinstall.service > /dev/null 2>&1
+rm /root/BBRz.sh > /dev/null 2>&1
 shutdown -r +1
 
