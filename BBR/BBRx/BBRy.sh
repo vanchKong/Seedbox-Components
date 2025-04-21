@@ -80,18 +80,21 @@ cp -R . /usr/src/$algo-$kernel_ver
 
 dkms add -m $algo -v $kernel_ver
 if [ ! $? -eq 0 ]; then
+    sed -i '/tcp_bbry/d' /etc/modules
     dkms remove -m $algo/$kernel_ver --all
     exit 1
 fi
 
 dkms build -m $algo -v $kernel_ver
 if [ ! $? -eq 0 ]; then
+    sed -i '/tcp_bbry/d' /etc/modules
     dkms remove -m $algo/$kernel_ver --all
     exit 1
 fi
 
 dkms install -m $algo -v $kernel_ver
 if [ ! $? -eq 0 ]; then
+    sed -i '/tcp_bbry/d' /etc/modules
     dkms remove -m $algo/$kernel_ver --all
     exit 1
 fi
