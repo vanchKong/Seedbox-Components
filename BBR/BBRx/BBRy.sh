@@ -63,8 +63,8 @@ clean:
 EOF
 
     # Create dkms.conf
-    cd ..
-    cat > ./dkms.conf << EOF
+cd ..
+cat > ./dkms.conf << EOF
 MAKE="'make' -C src/"
 CLEAN="make -C src/ clean"
 BUILT_MODULE_NAME=$bbr_file
