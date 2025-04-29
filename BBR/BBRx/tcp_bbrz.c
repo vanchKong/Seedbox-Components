@@ -668,7 +668,7 @@ static void bbr_lt_bw_interval_done(struct sock *sk, u32 bw)
 			/* All criteria are met; estimate we're policed. */
 			bbr->lt_bw = (bw + bbr->lt_bw) >> 1;  /* avg 2 intvls */
 			bbr->lt_use_bw = 1;
-			bbr->pacing_gain = BBR_UNIT;  /* try to avoid drops */
+			bbr->pacing_gain = BBR_UNIT * 6 / 5;  /* try to avoid drops */
 			bbr->lt_rtt_cnt = 0;
 			return;
 		}
@@ -751,7 +751,7 @@ static void bbr_lt_bw_sampling(struct sock *sk, const struct rate_sample *rs)
 		return;
 	}
 	t *= USEC_PER_MSEC;
-	bw = (u64)delivered * BW_UNIT;
+	bw = (u64)delivered * BW_UNIT * 6 / 5;
 	do_div(bw, t);
 	bbr_lt_bw_interval_done(sk, bw);
 }
@@ -998,7 +998,7 @@ static void bbr_update_gains(struct sock *sk)
 		break;
 	case BBR_PROBE_BW:
 		bbr->pacing_gain = (bbr->lt_use_bw ?
-				    BBR_UNIT :
+				    (BBR_UNIT * 6 / 5) :
 				    bbr_pacing_gain[bbr->cycle_idx]);
 		bbr->cwnd_gain	 = bbr_cwnd_gain;
 		break;
