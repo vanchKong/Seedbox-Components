@@ -72,7 +72,7 @@ BUILT_MODULE_LOCATION=src/
 DEST_MODULE_LOCATION=/updates/net/ipv4
 PACKAGE_NAME=$algo
 PACKAGE_VERSION=$kernel_ver
-REMAKE_INITRD=yes
+AUTOINSTALL=yes
 EOF
 
 # Start dkms install
