@@ -1,173 +1,3 @@
-## List of qBittorrent Version that is supported
-declare -a qb_ver_list=("4.1.9" "4.1.9.1" "4.3.8" "4.3.9" "4.6.7" "5.0.3" "5.0.4")
-#Generate the list of qBittorrent Version that is supported
-unset qb_name_list i
-for i in "${qb_ver_list[@]}"
-do
-	qb_name_list+=("qBittorrent-$i")
-done
-## List of libtorrent Version that is supported
-declare -a lib_ver_list=("1_1_14" "v1.2.14" "v1.2.19" "v1.2.20" "v2.0.11")
-#Generate the list of libtorrent Version that is supported
-unset lib_name_list i
-for i in "${lib_ver_list[@]}"
-do
-	lib_name_list+=("libtorrent-$i")
-done
-qb_ver_choose(){
-	need_input "Please choose your qBittorrent Version:"
-	select opt in "${qb_name_list[@]}"
-	do
-		case $opt in
-		qBittorrent*)
-			qb_ver=${opt}; break
-			;;
-		*) warn "Please choose a valid version" ;;
-		esac
-	done
-}
-
-lib_ver_choose(){
-	## Check if qb_ver is empty
-	if [[ -z "$qb_ver" ]]; then
-		qb_ver_choose
-	fi
-
-	## Allow users to determine which version of libtorrent to go with the qBittorrent
-	need_input "Please choose your libtorrent version:"
-	select opt in "${lib_name_list[@]}"
-	do
-		case $opt in
-		libtorrent*)
-			lib_ver=${opt}; break
-			;;
-		*) warn "Please choose a valid version" ;;
-		esac
-	done
-}
-
-lib_ver_check(){
-	## Check if lib_ver is empty
-	if [[ -z "$lib_ver" ]]; then
-		lib_ver_choose
-	fi
-	## Check if the libtorrent version is supported
-	if [[ ! " ${lib_name_list[@]} " =~ " ${lib_ver} " ]]; then
-		warn "libtorrent $lib_ver is not supported"
-		lib_ver_choose
-	fi
-	## Check if the libtorrent version is compatible with qBittorrent version
-	if [[ "${qb_ver}" =~ "4.1." ]]; then
-		while true
-		do
-			if [[ ! "${lib_ver}" == "libtorrent-1_1_14" ]]; then
-				tput sgr0; clear
-				warn "qBittorrent $qb_ver is not compatible with libtorrent $lib_ver"
-				warn "qBittorrent $qb_ver is compatible with libtorrent-1_1_x only"
-				warn "Please choose a compatible version"
-				lib_ver_choose
-			else
-				break
-			fi
-		done
-	elif [[ "${qb_ver}" =~ "4.2." ]]; then
-		while true
-		do
-			if [[ ! "${lib_ver}" =~ "libtorrent-v1.2." ]]; then
-				tput sgr0; clear
-				warn "qBittorrent $qb_ver is not compatible with libtorrent $lib_ver"
-				warn "qBittorrent $qb_ver is compatible with libtorrent-v1.2.x only"
-				warn "Please choose a compatible version"
-				lib_ver_choose
-			else
-				break
-			fi
-	done
-	elif [[ "${qb_ver}" =~ "4.3." ]]; then
-		while true
-		do
-			if [[ ! "${lib_ver}" =~ "libtorrent-v1.2." ]]; then
-				tput sgr0; clear
-				warn "qBittorrent $qb_ver is not compatible with libtorrent $lib_ver"
-				warn "qBittorrent $qb_ver is compatible with libtorrent-v1.2.x only"
-				warn "Please choose a compatible version"
-				lib_ver_choose
-			else
-				break
-			fi
-	done
-	elif [[ "${qb_ver}" =~ "4.4." ]]; then
-		while true
-		do
-			if [[ ! "${lib_ver}" =~ "libtorrent-v1.2." ]] && [[ ! "${lib_ver}" =~ "libtorrent-v2.0." ]]; then
-				tput sgr0; clear
-				warn "qBittorrent $qb_ver is not compatible with libtorrent $lib_ver";
-				warn "qBittorrent $qb_ver is compatible with libtorrent-v1.2.x or libtorrent-v2.0.x only";
-				warn "Please choose a compatible version";
-				lib_ver_choose
-			else
-				break
-			fi
-		done
-	elif [[ "${qb_ver}" =~ "4.5." ]]; then
-		while true
-		do
-			if [[ ! "${lib_ver}" =~ "libtorrent-v1.2." ]] && [[ ! "${lib_ver}" =~ "libtorrent-v2.0." ]]; then
-				tput sgr0; clear
-				warn "qBittorrent $qb_ver is not compatible with libtorrent $lib_ver"
-				warn "qBittorrent $qb_ver is compatible with libtorrent-v1.2.x or libtorrent-v2.0.x only"
-				warn "Please choose a compatible version"
-				lib_ver_choose
-			else
-				break
-			fi
-		done
-	elif [[ "${qb_ver}" =~ "4.6." ]]; then
-		while true
-		do
-			if [[ ! "${lib_ver}" =~ "libtorrent-v1.2." ]] && [[ ! "${lib_ver}" =~ "libtorrent-v2.0." ]]; then
-				tput sgr0; clear
-				warn "qBittorrent $qb_ver is not compatible with libtorrent $lib_ver"
-				warn "qBittorrent $qb_ver is compatible with libtorrent-v1.2.x or libtorrent-v2.0.x only"
-				warn "Please choose a compatible version"
-				lib_ver_choose
-			else
-				break
-			fi
-		done
-	elif [[ "${qb_ver}" =~ "5.0." ]]; then
-		while true
-		do
-			if [[ ! "${lib_ver}" =~ "libtorrent-v1.2." ]] && [[ ! "${lib_ver}" =~ "libtorrent-v2.0." ]]; then
-				tput sgr0; clear
-				warn "qBittorrent $qb_ver is not compatible with libtorrent $lib_ver"
-				warn "qBittorrent $qb_ver is compatible with libtorrent-v1.2.x or libtorrent-v2.0.x only"
-				warn "Please choose a compatible version"
-				lib_ver_choose
-			else
-				break
-			fi
-		done
-	fi
-}
-
-qb_install_check(){
-	# Check if qBittorrent version and libtorrent version are supported
-	## Check if the qBittorrent version is supported
-	if [[ ! " ${qb_name_list[@]} " =~ " ${qb_ver} " ]]; then
-		warn "qBittorrent $qb_ver is not supported"
-		qb_ver_choose
-	fi
-	## Check if the libtorrent version is supported
-	if [[ ! " ${lib_name_list[@]} " =~ " ${lib_ver} " ]]; then
-		warn "libtorrent $lib_ver is not supported"
-		lib_ver_check
-	fi
-	## Check if the libtorrent version is compatible with qBittorrent version
-	lib_ver_check
-}
-
-
 install_qBittorrent_(){
 	username=$1
 	password=$2
@@ -176,7 +6,9 @@ install_qBittorrent_(){
 	qb_cache=$5
 	qb_port=$6
 	qb_incoming_port=$7
+	qb_suffix=$8
 
+      
 	## Check if qBittorrent is running
 	if pgrep -i -f qbittorrent; then
 		warn "qBittorrent is running. Stopping it now..."
@@ -204,23 +36,30 @@ install_qBittorrent_(){
 		warn "Unsupported CPU architecture"
 		return 1
 	fi
-	wget https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/Torrent%20Clients/qBittorrent/$arch/$qb_ver%20-%20$lib_ver/qbittorrent-nox -O $HOME/qbittorrent-nox && chmod +x $HOME/qbittorrent-nox
-	#Check if the download is successful
+
+	# 拼接下载路径（自动加前缀“ - ”）
+	if [[ -n "$qb_suffix" ]]; then
+		qb_path="$qb_ver - $lib_ver - $qb_suffix"
+	else
+		qb_path="$qb_ver - $lib_ver"
+	fi
+
+	wget "https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/Torrent%20Clients/qBittorrent/$arch/$qb_path/qbittorrent-nox" -O "$HOME/qbittorrent-nox" && chmod +x "$HOME/qbittorrent-nox"
 	if [ $? -ne 0 ]; then
 		warn "Failed to download qBittorrent-nox executable"
 		return 1
 	fi
 
-	# Install qbittorrent-nox
-	mv $HOME/qbittorrent-nox /usr/bin/qbittorrent-nox
+	mv "$HOME/qbittorrent-nox" /usr/bin/qbittorrent-nox
 	mkdir -p /home/$username/qbittorrent/Downloads && chown -R $username:$username /home/$username/qbittorrent/
-    mkdir -p /home/$username/.config/qBittorrent && chown $username:$username /home/$username/.config/qBittorrent
+	mkdir -p /home/$username/.config/qBittorrent && chown $username:$username /home/$username/.config/qBittorrent
 
 	# Create systemd services
 	if test -e /etc/systemd/system/qbittorrent-nox@.service; then
 		warn "qBittorrent systemd services already exist. Removing it now..."
 		rm /etc/systemd/system/qbittorrent-nox@.service
 	fi
+
 	touch /etc/systemd/system/qbittorrent-nox@.service
 	cat << EOF >/etc/systemd/system/qbittorrent-nox@.service
 [Unit]
@@ -240,8 +79,6 @@ RestartSec=10
 [Install]
 WantedBy=multi-user.target
 EOF
-    systemctl enable qbittorrent-nox@$username
-    systemctl start qbittorrent-nox@$username
 
 	## Configure qBittorrent
 	# Check for Virtual Environment since some of the tunning might not work on virtual machine
