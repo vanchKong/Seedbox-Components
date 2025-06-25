@@ -250,10 +250,8 @@ RestartSec=10
 WantedBy=multi-user.target
 EOF
 
-
+	systemctl daemon-reload
     	systemctl enable qbittorrent-nox@$username
-        systemctl start qbittorrent-nox@$username
-
 
 	## Configure qBittorrent
 	# Check for Virtual Environment since some of the tunning might not work on virtual machine
