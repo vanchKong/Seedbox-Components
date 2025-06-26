@@ -351,6 +351,65 @@ install_autoremove-torrents_() {
 		fi
 	fi
 	
+install_fb_() {
+	if [[ -z $username ]]; then
+		fail "Username not set"
+		return 1
+	fi
+	if [[ -z $fb_port ]]; then
+		fail "Filebrowser port not set"
+		fb_port=8082
+	fi
+	#Check if docker is installed
+	if [ -z $(which docker) ]; then
+		curl -fsSL https://get.docker.com -o get-docker.sh
+		# Check if download fail
+		if [ ! -f get-docker.sh ]; then
+			fail "Docker download failed"
+			return 1
+		fi
+		sh get-docker.sh
+		# Check if installation fail
+		if [ $? -ne 0 ]; then
+			fail "Docker installation failed"
+			rm get-docker.sh
+			return 1
+		fi
+	else
+		#Check if Docker image filebrowser is installed
+		if [ -n "$(docker images | grep 80x86/filebrowser | grep -v grep)" ]; then
+			warn "Filebrowser Docker image already exists"
+		fi
+		if [ -n "$(docker ps -a --filter "name=fb" | grep -v NAMES)" ]; then
+			warn "Filebrowser container 'fb' already exists or is running. Skipping installation."
+			return 1
+		fi
+	fi
+	
+	## Install Filebrowser
+	mkdir -p /root/fb/config
+	chmod 755 /root/fb/config
+	mkdir -p /home/$username/qbittorrent/Downloads
+	chown -R $username:$username /home/$username/qbittorrent/Downloads
+
+	docker run -d --name fb \\
+	--restart=unless-stopped \\
+	-v /root/fb/config:/config \\
+	-v /home/$username/qbittorrent/Downloads:/myfiles/Downloads \\
+	-p $fb_port:8082 \\
+	80x86/filebrowser
+
+	sleep 5s
+	# Check if Filebrowser is running
+	if ! [ "$( docker container inspect -f '{{.State.Status}}' fb )" = "running" ]; then
+		fail "Filebrowser failed to start"
+		return 1
+	fi
+	# Clean up
+	rm -f get-docker.sh
+	return 0
+}
+
 
     # qBittorrent
 	if test -f /usr/bin/qbittorrent-nox; then
