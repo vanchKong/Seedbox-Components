@@ -350,7 +350,55 @@ install_autoremove-torrents_() {
 			su user -s /bin/sh -c "pipx ensurepath"
 		fi
 	fi
-	
+
+    # qBittorrent
+	if test -f /usr/bin/qbittorrent-nox; then
+		touch /home/$username/.config.yml && chown $username:$username /home/$username/.config.yml
+        cat << EOF >>/home/$username/.config.yml
+General-qb:          
+  client: qbittorrent
+  host: http://127.0.0.1:$qb_port
+  username: $username
+  password: $password
+  strategies:
+    General:
+      seeding_time: 3153600000
+  delete_data: true
+EOF
+    fi
+	sed -i 's+127.0.0.1: +127.0.0.1:+g' $HOME/.config.yml
+    mkdir -p /home/$username/.autoremove-torrents/log && chown -R $username /home/$username/.autoremove-torrents
+	touch /home/$username/.autoremove-torrents/autoremove-torrents.sh && chown $username:$username /home/$username/.autoremove-torrents/autoremove-torrents.sh
+	cat << EOF >/home/$username/.autoremove-torrents/autoremove-torrents.sh
+#!/bin/bash
+while true; do
+	/home/user/.local/bin/autoremove-torrents --conf=/home/$username/.config.yml --log=/home/$username/.autoremove-torrents/log
+	sleep 5s
+done
+EOF
+	chmod +x /home/$username/.autoremove-torrents/autoremove-torrents.sh
+	# Create Autoremove-torrents service
+	touch /etc/systemd/system/autoremove-torrents@.service
+	cat << EOF >/etc/systemd/system/autoremove-torrents@.service
+[Unit]
+Description=autoremove-torrents service
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+User=$username
+Group=$username
+ExecStart=/home/$username/.autoremove-torrents/autoremove-torrents.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+	# Enable and start Autoremove-torrents
+	systemctl enable autoremove-torrents@$username
+	systemctl start autoremove-torrents@$username
+	return 0
+}
+
 install_fb_() {
 	if [[ -z $username ]]; then
 		fail "Username not set"
@@ -409,56 +457,6 @@ install_fb_() {
 	rm -f get-docker.sh
 	return 0
 }
-
-
-    # qBittorrent
-	if test -f /usr/bin/qbittorrent-nox; then
-		touch /home/$username/.config.yml && chown $username:$username /home/$username/.config.yml
-        cat << EOF >>/home/$username/.config.yml
-General-qb:          
-  client: qbittorrent
-  host: http://127.0.0.1:$qb_port
-  username: $username
-  password: $password
-  strategies:
-    General:
-      seeding_time: 3153600000
-  delete_data: true
-EOF
-    fi
-	sed -i 's+127.0.0.1: +127.0.0.1:+g' $HOME/.config.yml
-    mkdir -p /home/$username/.autoremove-torrents/log && chown -R $username /home/$username/.autoremove-torrents
-	touch /home/$username/.autoremove-torrents/autoremove-torrents.sh && chown $username:$username /home/$username/.autoremove-torrents/autoremove-torrents.sh
-	cat << EOF >/home/$username/.autoremove-torrents/autoremove-torrents.sh
-#!/bin/bash
-while true; do
-	/home/user/.local/bin/autoremove-torrents --conf=/home/$username/.config.yml --log=/home/$username/.autoremove-torrents/log
-	sleep 5s
-done
-EOF
-	chmod +x /home/$username/.autoremove-torrents/autoremove-torrents.sh
-	# Create Autoremove-torrents service
-	touch /etc/systemd/system/autoremove-torrents@.service
-	cat << EOF >/etc/systemd/system/autoremove-torrents@.service
-[Unit]
-Description=autoremove-torrents service
-After=syslog.target network-online.target
-
-[Service]
-Type=simple
-User=$username
-Group=$username
-ExecStart=/home/$username/.autoremove-torrents/autoremove-torrents.sh
-
-[Install]
-WantedBy=multi-user.target
-EOF
-	# Enable and start Autoremove-torrents
-	systemctl enable autoremove-torrents@$username
-	systemctl start autoremove-torrents@$username
-	return 0
-}
-
 ## System Tweaking
 
 # Tuned
