@@ -445,8 +445,6 @@ install_fb_() {
 	-v /root/fb/config:/config \
 	-v /home/$username/qbittorrent/Downloads:/myfiles/Downloads \
 	-p $fb_port:8082 \
-	-e WEB_USERNAME="$username" \
-	-e WEB_PASSWORD="$password" \
 	80x86/filebrowser
 
 	sleep 5s
