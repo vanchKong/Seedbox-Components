@@ -440,11 +440,13 @@ install_fb_() {
 	mkdir -p /home/$username/qbittorrent/Downloads
 	chown -R $username:$username /home/$username/qbittorrent/Downloads
 
-	docker run -d --name fb \\
-	--restart=unless-stopped \\
-	-v /root/fb/config:/config \\
-	-v /home/$username/qbittorrent/Downloads:/myfiles/Downloads \\
-	-p $fb_port:8082 \\
+	docker run -d --name fb \
+	--restart=unless-stopped \
+	-v /root/fb/config:/config \
+	-v /home/$username/qbittorrent/Downloads:/myfiles/Downloads \
+	-p $fb_port:8082 \
+	-e WEB_USERNAME="$username" \
+	-e WEB_PASSWORD="$password" \
 	80x86/filebrowser
 
 	sleep 5s
