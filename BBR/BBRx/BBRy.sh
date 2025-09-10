@@ -13,17 +13,58 @@ if [ ! -x /usr/sbin/dkms ]; then
 		exit 1
 	fi
 fi
+
+if dkms status | grep -q "bbry/"; then
+	for module_ver in $(dkms status | grep "bbry/" | awk -F, '{print $1}' | awk -F/ '{print $2}' | sort -u); do
+		echo "Removing existing bbry module version: $module_ver"
+		dkms remove -m bbry -v "$module_ver" --all
+	done
+fi
+
+# Ensure header meta package is installed so headers follow kernel upgrades (always try)
+arch=$(dpkg --print-architecture 2>/dev/null || uname -m)
+uname_r=$(uname -r)
+if echo "$uname_r" | grep -q '\-cloud-'; then
+    flavor="cloud"
+else
+    flavor="generic"
+fi
+case "$arch" in
+    amd64)
+        if [ "$flavor" = "cloud" ]; then
+            header_meta_pkg="linux-headers-cloud-amd64"
+        else
+            header_meta_pkg="linux-headers-amd64"
+        fi
+        ;;
+    arm64|aarch64)
+        if [ "$flavor" = "cloud" ]; then
+            header_meta_pkg="linux-headers-cloud-arm64"
+        else
+            header_meta_pkg="linux-headers-arm64"
+        fi
+        ;;
+    *)
+        header_meta_pkg=""
+        ;;
+esac
+if [ -n "$header_meta_pkg" ]; then
+    echo "Installing kernel headers meta package: $header_meta_pkg"
+    apt-get -y install "$header_meta_pkg"
+fi
+
 #Ensure there is header file
 if [ ! -f /usr/src/linux-headers-$(uname -r)/.config ]; then
-	if [[ -z $(apt-cache search linux-headers-$(uname -r)) ]]; then
-		echo "Error: linux-headers-$(uname -r) not found" >&2
-		exit 1
-	fi
-	apt-get -y install linux-headers-$(uname -r)
-	if [ ! -f /usr/src/linux-headers-$(uname -r)/.config ]; then
-		echo "Error: linux-headers-$(uname -r) is not installed" >&2
-		exit 1
-	fi
+    if [[ -z $(apt-cache search linux-headers-$(uname -r)) ]]; then
+        echo "Error: linux-headers-$(uname -r) not found" >&2
+        exit 1
+    fi
+    echo "Installing specific kernel headers: linux-headers-$(uname -r)"
+    apt-get -y install linux-headers-$(uname -r)
+    if [ ! -f /usr/src/linux-headers-$(uname -r)/.config ]; then
+        echo "Error: linux-headers-$(uname -r) is not installed" >&2
+        exit 1
+    fi
 fi
 
 #bbry
@@ -32,7 +73,8 @@ if [ ! -f $HOME/tcp_bbry.c ]; then
 	echo "Error: Download failed! Exiting." >&2
 	exit 1
 fi
-kernel_ver=6.1.0
+# DKMS 模块版本（与内核无关）
+module_ver=1.0.0
 algo=bbry
 
 # Compile and install
@@ -45,57 +87,45 @@ cd $HOME/.bbr/src
 
 mv $HOME/$bbr_src $HOME/.bbr/src/$bbr_src
 
-# Create Makefile
+# Create Makefile（仅声明需要构建的目标，具体内核构建目录交由 dkms.conf 传入）
 cat > ./Makefile << EOF
 obj-m:=$bbr_obj
-
-default:
-	make -C /lib/modules/\$(shell uname -r)/build M=\$(PWD)/src modules
-
-clean:
-	-rm modules.order
-	-rm Module.symvers
-	-rm .[!.]* ..?*
-	-rm $bbr_file.mod
-	-rm $bbr_file.mod.c
-	-rm *.o
-	-rm *.cmd
 EOF
 
     # Create dkms.conf
 cd ..
 cat > ./dkms.conf << EOF
-MAKE="'make' -C src/"
-CLEAN="make -C src/ clean"
+PACKAGE_NAME=$algo
+PACKAGE_VERSION=$module_ver
+MAKE="make -C \${kernel_source_dir} M=\${dkms_tree}/$algo/$module_ver/build/src modules"
+CLEAN="make -C \${kernel_source_dir} M=\${dkms_tree}/$algo/$module_ver/build/src clean"
 BUILT_MODULE_NAME=$bbr_file
 BUILT_MODULE_LOCATION=src/
 DEST_MODULE_LOCATION=/updates/net/ipv4
-PACKAGE_NAME=$algo
-PACKAGE_VERSION=$kernel_ver
 AUTOINSTALL=yes
 EOF
 
 # Start dkms install
-cp -R . /usr/src/$algo-$kernel_ver
+cp -R . /usr/src/$algo-$module_ver
 
-dkms add -m $algo -v $kernel_ver
+dkms add -m $algo -v $module_ver
 if [ ! $? -eq 0 ]; then
     sed -i '/tcp_bbry/d' /etc/modules
-    dkms remove -m $algo/$kernel_ver --all
+    dkms remove -m $algo/$module_ver --all
     exit 1
 fi
 
-dkms build -m $algo -v $kernel_ver
+dkms build -m $algo -v $module_ver
 if [ ! $? -eq 0 ]; then
     sed -i '/tcp_bbry/d' /etc/modules
-    dkms remove -m $algo/$kernel_ver --all
+    dkms remove -m $algo/$module_ver --all
     exit 1
 fi
 
-dkms install -m $algo -v $kernel_ver
+dkms install -m $algo -v $module_ver
 if [ ! $? -eq 0 ]; then
     sed -i '/tcp_bbry/d' /etc/modules
-    dkms remove -m $algo/$kernel_ver --all
+    dkms remove -m $algo/$module_ver --all
     exit 1
 fi
 
@@ -123,4 +153,3 @@ systemctl disable bbrinstall.service > /dev/null 2>&1
 rm /etc/systemd/system/bbrinstall.service > /dev/null 2>&1
 rm /root/BBRy.sh > /dev/null 2>&1
 shutdown -r +1
-
