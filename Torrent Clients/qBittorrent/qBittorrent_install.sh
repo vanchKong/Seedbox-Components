@@ -219,7 +219,8 @@ install_qBittorrent_(){
 		warn "Failed to download qBittorrent-nox executable"
 		return 1
 	fi
-
+ 
+	# Install qbittorrent-nox
 	mv "$HOME/qbittorrent-nox" /usr/bin/qbittorrent-nox
 	mkdir -p /home/$username/qbittorrent/Downloads && chown -R $username:$username /home/$username/qbittorrent/
 	mkdir -p /home/$username/.config/qBittorrent && chown $username:$username /home/$username/.config/qBittorrent
@@ -237,13 +238,12 @@ Description=qBittorrent
 After=network.target
 
 [Service]
-Type=forking
+Type=exec
 User=$username
 LimitNOFILE=infinity
-ExecStart=/usr/bin/qbittorrent-nox -d
-ExecStop=/usr/bin/killall -w -s 9 /usr/bin/qbittorrent-nox
+ExecStart=/usr/bin/qbittorrent-nox
 Restart=on-failure
-TimeoutStopSec=20
+TimeoutStopSec=10
 RestartSec=10
 
 [Install]
