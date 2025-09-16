@@ -308,7 +308,7 @@ WebUI\Port=$qb_port
 WebUI\Username=$username
 EOF
     elif [[ "${qb_ver}" =~ "4.2."|"4.3." ]]; then
-        wget  https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/Torrent%20Clients/qBittorrent/$arch/qb_password_gen -O $HOME/qb_password_gen && chmod +x $HOME/qb_password_gen
+        wget  https://raw.githubusercontent.com/SAGIRIxr/Seedbox-Components-P/main/Torrent%20Clients/qBittorrent/$arch/qb_password_gen -O $HOME/qb_password_gen && chmod +x $HOME/qb_password_gen
         #Check if the download is successful
 		if [ $? -ne 0 ]; then
 			warn "Failed to download qb_password_gen"
