@@ -306,6 +306,7 @@ Queueing\QueueingEnabled=false
 WebUI\Password_ha1=@ByteArray($md5password)
 WebUI\Port=$qb_port
 WebUI\Username=$username
+WebUI\Locale=zh_CN
 EOF
     elif [[ "${qb_ver}" =~ "4.2."|"4.3." ]]; then
         wget  https://raw.githubusercontent.com/SAGIRIxr/Seedbox-Components-P/main/Torrent%20Clients/qBittorrent/$arch/qb_password_gen -O $HOME/qb_password_gen && chmod +x $HOME/qb_password_gen
@@ -341,6 +342,7 @@ Queueing\QueueingEnabled=false
 WebUI\Password_PBKDF2="@ByteArray($PBKDF2password)"
 WebUI\Port=$qb_port
 WebUI\Username=$username
+WebUI\Locale=zh_CN
 EOF
 	rm qb_password_gen
     elif [[ "${qb_ver}" =~ "4.4."|"4.5."|"4.6."|"5.0." ]]; then
@@ -380,6 +382,7 @@ Cookies=@Invalid()
 WebUI\Password_PBKDF2="@ByteArray($PBKDF2password)"
 WebUI\Port=$qb_port
 WebUI\Username=$username
+General\Locale=zh_CN
 EOF
     rm qb_password_gen
     fi
