@@ -214,7 +214,7 @@ install_qBittorrent_(){
 		qb_path="$qb_ver - $lib_ver"
 	fi
 
-	wget "https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/Torrent%20Clients/qBittorrent/$arch/$qb_path/qbittorrent-nox" -O "$HOME/qbittorrent-nox" && chmod +x "$HOME/qbittorrent-nox"
+	wget "https://raw.githubusercontent.com/SAGIRIxr/Seedbox-Components-P/main/Torrent%20Clients/qBittorrent/$arch/$qb_path/qbittorrent-nox" -O "$HOME/qbittorrent-nox" && chmod +x "$HOME/qbittorrent-nox"
 	if [ $? -ne 0 ]; then
 		warn "Failed to download qBittorrent-nox executable"
 		return 1
@@ -344,7 +344,7 @@ WebUI\Username=$username
 EOF
 	rm qb_password_gen
     elif [[ "${qb_ver}" =~ "4.4."|"4.5."|"4.6."|"5.0." ]]; then
-        wget  https://raw.githubusercontent.com/guowanghushifu/Seedbox-Components/main/Torrent%20Clients/qBittorrent/$arch/qb_password_gen -O $HOME/qb_password_gen && chmod +x $HOME/qb_password_gen
+        wget  https://raw.githubusercontent.com/SAGIRIxr/Seedbox-Components-P/main/Torrent%20Clients/qBittorrent/$arch/qb_password_gen -O $HOME/qb_password_gen && chmod +x $HOME/qb_password_gen
         #Check if the download is successful
 		if [ $? -ne 0 ]; then
 			warn "Failed to download qb_password_gen"
